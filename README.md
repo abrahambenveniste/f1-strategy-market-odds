@@ -35,7 +35,7 @@ Feature availability will be audited carefully to prevent look-ahead leakage. Co
 - [Open-Meteo Single Runs API](https://open-meteo.com/en/docs/single-runs-api): archived forecast runs for point-in-time weather features. The [Historical Weather API](https://open-meteo.com/en/docs/historical-weather-api) provides reanalysis and is not a substitute for a forecast that was actually available at the time.
 - [Polymarket Gamma API](https://gamma-api.polymarket.com/docs), [CLOB and Data APIs](https://data-api.polymarket.com/v2/docs): market discovery, metadata, historical prices, and public market data.
 
-See [docs/data-sources.md](docs/data-sources.md) for the source register and [docs/research-plan.md](docs/research-plan.md) for the detailed protocol.
+See [docs/data-sources.md](docs/data-sources.md) for the source-to-field plan, [docs/technical-stack.md](docs/technical-stack.md) for language, packages, and tools, and [docs/research-plan.md](docs/research-plan.md) for the detailed protocol.
 
 ## First audit
 
@@ -58,6 +58,7 @@ It writes a local JSON inventory under `data/metadata/` with event/market metada
 
 - [x] Create public repository and record the initial research design.
 - [x] Add the first read-only market-universe audit collector.
+- [x] Document the source-to-field map and planned Python analysis stack.
 - [ ] Execute the audit and document actual event/market coverage, contract rules, and historical quote coverage.
 - [ ] Build a source inventory and point-in-time data model.
 - [ ] Implement transparent market and F1 baselines.
