@@ -1,6 +1,6 @@
 # Technical stack
 
-**Status:** Updated 20 October 2026 after checking API access. Python is the analysis language; SQL through DuckDB supports local queries. The first Polymarket collector uses Python's standard library, but it could not reach Gamma due to TLS validation. The environment currently runs Python 3.13.15 and does not have FastF1 installed. Planned dependencies will be locked only after data access and coverage are confirmed.
+**Status:** Updated 21 October 2026 after API and archive sample checks. Python is the analysis language; SQL through DuckDB supports local queries. The standard-library Gamma collector cannot reach the official API because TLS validation fails. DuckDB 1.5.6 was installed temporarily under the local `work/hfdiag/pkgs` scratch path for a selective Parquet audit only; it was not added to the project environment or lockfile. The project stack remains unpinned until wider data coverage is confirmed.
 
 ## Language and environment
 
