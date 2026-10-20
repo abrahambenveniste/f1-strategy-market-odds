@@ -2,7 +2,7 @@
 
 A reproducible research project asking whether public F1 performance and race-context data can improve race-winner probabilities beyond Polymarket prices—and whether any measured difference survives executable prices and trading frictions.
 
-> **Status:** Research design, source/stack documentation, and a read-only market-audit collector are in place. Connectivity checks found usable public F1, results, and weather samples, but Polymarket API access is blocked in the current environment. No market dataset, model results, paper-trading results, or evidence of profitability have been produced.
+> **Status:** Research design, source/stack documentation, and a read-only market-audit collector are in place. Connectivity checks found usable public F1, results, and weather samples, but Polymarket API access is blocked in this environment and the in-app browser reports the same certificate error. No market dataset, model results, paper-trading results, or evidence of profitability have been produced.
 
 ## Research question
 
@@ -40,7 +40,7 @@ See [docs/data-sources.md](docs/data-sources.md) for the source-to-field plan an
 
 ## Current access check
 
-On 20 October 2026, read-only sample requests to OpenF1, Jolpica-F1, and Open-Meteo returned data. Polymarket Gamma, CLOB, and Data API requests failed TLS certificate validation from this environment. Until that is resolved, the project cannot verify F1 market coverage or build the market-vs-model dataset. No certificate checks were disabled.
+On 20 October 2026, read-only sample requests to OpenF1, Jolpica-F1, and Open-Meteo returned data. Polymarket Gamma, CLOB, and Data API requests failed TLS certificate validation from this environment; the user reproduced `ERR_CERT_COMMON_NAME_INVALID` in the in-app browser for Gamma. Until access is restored, the project cannot verify F1 market coverage or build the market-vs-model dataset. No certificate checks were disabled. An independent provider is under review but requires an API key; its F1 coverage and cost are not yet verified.
 
 ## First market audit
 
