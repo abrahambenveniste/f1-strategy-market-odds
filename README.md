@@ -37,7 +37,7 @@ Feature availability will be audited carefully to prevent look-ahead leakage. Co
 - [Polymarket-v1 public archive](https://huggingface.co/datasets/TimeSeventeen/Polymarket-v1): independent, CC-BY-4.0 historical trade fills and resolved labels. One 2025 Bahrain winner-market sample is verified; it has no order-book snapshots, so it supports price-probability research but not executable fill claims.
 - [FastF1](https://docs.fastf1.dev/) remains an optional alternative. Its live timing archive currently returns HTTP 401 without authentication; see the [availability log](docs/experiment-log.md).
 
-See [docs/data-sources.md](docs/data-sources.md) for the source-to-field plan and availability checks, [docs/technical-stack.md](docs/technical-stack.md) for language, packages, and tools, and [docs/research-plan.md](docs/research-plan.md) for the detailed protocol.
+See [docs/data-sources.md](docs/data-sources.md) for the source-to-field plan and availability checks, [docs/technical-stack.md](docs/technical-stack.md) for language, packages, and tools, [docs/mcp-evaluation.md](docs/mcp-evaluation.md) for the MCP assessment, and [docs/research-plan.md](docs/research-plan.md) for the detailed protocol.
 
 ## Current access check
 
