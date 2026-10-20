@@ -2,6 +2,18 @@
 
 This is the project diary. Add an entry whenever a decision, data audit, experiment, or result changes the research direction. Keep failed attempts and negative findings.
 
+## 2026-10-21 — Gamma certificate error and Polymarket-v1 sample audit
+
+**Browser/network finding:** The user reports that the in-app browser cannot verify the certificate for `gamma-api.polymarket.com` and shows `ERR_CERT_COMMON_NAME_INVALID`. This confirms a certificate-name validation failure in the browser as well as the earlier client requests; it does not identify whether the cause is the endpoint, DNS routing, or network inspection. TLS verification stayed enabled.
+
+**Alternative dataset:** Reviewed the independent [Polymarket-v1 archive](https://huggingface.co/datasets/TimeSeventeen/Polymarket-v1). Its Hub tree API lists 857 `daily_aligned_multi` date partitions spanning 22 Dec 2023–28 Apr 2026. The dataset card reports CC-BY-4.0 and documents trade records, normalized event probabilities, market slugs, resolution labels, and no order-book snapshots.
+
+**Small sample method:** The Hugging Face Dataset Viewer `/search` call returned HTTP 502; `/filter` returned HTTP 500 with “the dataset index is loading”. Direct downloads of four date partitions succeeded using normal certificate validation: `2024_03_02`, `2024_03_03`, `2025_04_13`, and `2025_04_14` (3,495,035 bytes total). DuckDB 1.5.6 was installed only under the local `work/hfdiag/pkgs` scratch folder to inspect the Parquet files; no project dependencies or lockfile were changed, and no downloaded data were committed.
+
+**Results:** The two 2024 Bahrain race-date files produced no F1 winner-market matches; that narrow check does not establish 2024-wide absence. The 2025 Bahrain race-date files contained 14 resolved driver/“another driver” winner-market contracts in one multi-outcome event group, 1,495 trade records, and 80,439.91 USDC.e notional. The Jolpica schedule returned a 15:00 UTC race start. At the five-minute pre-race cutoff (14:55 UTC), 13 candidate markets had at least one trade (675 records, 25,544.34 USDC.e notional); 11 of their most recent prints were within one hour, while two were stale. This validates one useful historical event sample and makes staleness a required feature of the market-data audit.
+
+**Decision and next step:** The archive provides a no-cost route for retrospective trade-price benchmark and resolution-label research, so work can continue while official Polymarket TLS access remains broken. It cannot support order-book-aware execution or prove fillable profitability. Finish a selective F1 market/season and cutoff-coverage audit across the archive. Keep official Polymarket public APIs or a verified provider as a requirement for prospective quote/depth collection and realistic paper execution. Never disable certificate checks.
+
 ## 2026-10-20 — Polymarket browser failure and alternate provider check
 
 **User confirmation:** The Gamma API URL also fails in the user's in-app browser with `ERR_CERT_COMMON_NAME_INVALID` and a browser message that the certificate for `gamma-api.polymarket.com` cannot be verified. This confirms the official API issue is not limited to the Python collector or shell request.
