@@ -1,0 +1,3 @@
+# Minimal runtime for scripts/audit_archive_f1_coverage.py.
+# DuckDB reads the public Parquet archive directly over verified HTTPS.
+duckdb==1.5.6
