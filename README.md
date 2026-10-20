@@ -2,7 +2,7 @@
 
 A reproducible research project asking whether public F1 performance and race-context data can improve race-winner probabilities beyond Polymarket prices—and whether any measured difference survives executable prices and trading frictions.
 
-> **Status:** Research design, source/stack documentation, and a read-only market-audit collector are in place. Connectivity checks found usable public F1, results, and weather samples, but Polymarket API access is blocked in this environment and the in-app browser reports the same certificate error. No market dataset, model results, paper-trading results, or evidence of profitability have been produced.
+> **Status:** Research design, source/stack documentation, and a read-only Gamma market-audit collector are in place. OpenF1, Jolpica-F1, and Open-Meteo sample data are accessible; official Polymarket API calls currently fail TLS validation. A small public archive sample confirms resolved F1 winner-market trade data for 2025 Bahrain, but full coverage and executable quotes are not yet audited. No joined model dataset, model results, paper returns, or profitability evidence have been produced.
 
 ## Research question
 
@@ -34,13 +34,14 @@ Feature availability will be audited carefully to prevent look-ahead leakage. Co
 - [Jolpica-F1](https://github.com/jolpica/jolpica-f1/blob/main/docs/README.md): historical schedules and results through an Ergast-compatible API.
 - [Open-Meteo Single Runs API](https://open-meteo.com/en/docs/single-runs-api) and [Historical Forecast API](https://open-meteo.com/en/docs/historical-forecast-api): archived forecast runs for point-in-time weather features. The [Historical Weather API](https://open-meteo.com/en/docs/historical-weather-api) provides reanalysis and is not a substitute for a forecast that was actually available at the time.
 - [Polymarket Gamma API](https://gamma-api.polymarket.com/docs), [CLOB and Data APIs](https://data-api.polymarket.com/v2/docs): market discovery, metadata, historical prices, and public market data.
+- [Polymarket-v1 public archive](https://huggingface.co/datasets/TimeSeventeen/Polymarket-v1): independent, CC-BY-4.0 historical trade fills and resolved labels. One 2025 Bahrain winner-market sample is verified; it has no order-book snapshots, so it supports price-probability research but not executable fill claims.
 - [FastF1](https://docs.fastf1.dev/) remains an optional alternative. Its live timing archive currently returns HTTP 401 without authentication; see the [availability log](docs/experiment-log.md).
 
 See [docs/data-sources.md](docs/data-sources.md) for the source-to-field plan and availability checks, [docs/technical-stack.md](docs/technical-stack.md) for language, packages, and tools, and [docs/research-plan.md](docs/research-plan.md) for the detailed protocol.
 
 ## Current access check
 
-On 20 October 2026, read-only sample requests to OpenF1, Jolpica-F1, and Open-Meteo returned data. Polymarket Gamma, CLOB, and Data API requests failed TLS certificate validation from this environment; the user reproduced `ERR_CERT_COMMON_NAME_INVALID` in the in-app browser for Gamma. Until access is restored, the project cannot verify F1 market coverage or build the market-vs-model dataset. No certificate checks were disabled. An independent provider is under review but requires an API key; its F1 coverage and cost are not yet verified.
+Read-only sample requests on 20–21 October 2026 returned data from OpenF1, Jolpica-F1, and Open-Meteo. Polymarket Gamma, CLOB, and Data API calls fail TLS validation in this environment; the user reproduced `ERR_CERT_COMMON_NAME_INVALID` for Gamma in the in-app browser. A public Polymarket-v1 archive sample confirms resolved trade data for the 2025 Bahrain winner market and pre-race last-trade prices for 13 candidate outcomes, but the archive has no book or quote history. Historical F1-market coverage across seasons remains under audit. F1 and weather samples plus one historical Polymarket trade sample are available; the official Polymarket APIs and executable quote data are not connected. No certificate checks were disabled.
 
 ## First market audit
 
@@ -65,7 +66,8 @@ It writes a local JSON inventory under `data/metadata/` with event/market metada
 - [x] Add the first read-only market-universe audit collector.
 - [x] Document the source-to-field map and planned Python analysis stack.
 - [x] Check sample availability for F1 historical data, results, and archived weather.
-- [ ] Restore valid TLS access to Polymarket's public APIs and audit actual market/price-history coverage.
+- [x] Confirm one resolved 2025 F1 winner-market sample through the public Polymarket-v1 archive.
+- [ ] Complete the archive-wide F1 market and cutoff-price coverage audit; restore valid Polymarket API access for prospective quote and order-book capture.
 - [ ] Build a source inventory and point-in-time data model.
 - [ ] Implement transparent market and F1 baselines.
 - [ ] Add calibrated race simulation and walk-forward evaluation.
