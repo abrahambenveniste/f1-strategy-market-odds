@@ -2,6 +2,16 @@
 
 This is the project diary. Add an entry whenever a decision, data audit, experiment, or result changes the research direction. Keep failed attempts and negative findings.
 
+## 2026-10-20 — Polymarket browser failure and alternate provider check
+
+**User confirmation:** The Gamma API URL also fails in the user's in-app browser with `ERR_CERT_COMMON_NAME_INVALID` and a browser message that the certificate for `gamma-api.polymarket.com` cannot be verified. This confirms the official API issue is not limited to the Python collector or shell request.
+
+**Fallback check:** The independent PolymarketData provider's documentation advertises minute-level prices, liquidity metrics, and historical Level 2 books, with standard coverage from August 2025 and earlier history on enterprise plans. Its API host completed TLS successfully from this environment, but an unauthenticated `/v1/markets?limit=1` request returned HTTP 401, consistent with the provider's requirement for an API key. Its specific F1 market coverage, usable sample depth, pricing, and terms have not been verified. No account, key, or purchase was made.
+
+**Decision:** Do not disable TLS checks or scrape through an unverified certificate. Keep the official Polymarket APIs as the preferred source if a valid network route can be restored. Treat the third-party API as a possible paid fallback only after verifying F1 market coverage, suitable historic timestamps, and cost.
+
+**Next step:** Choose whether to try the official API from a different trusted network or evaluate a time-limited sample/trial from the independent provider. Public F1/results/weather work can continue while this is decided, but market modelling cannot.
+
 ## 2026-10-20 — Read-only API and dataset availability check
 
 **Action:** Checked public source connectivity using standard certificate validation, then queried small sample records. No certificates were ignored, packages were not installed, and no source files or API credentials were saved. Updated the source plan and README with the findings.
