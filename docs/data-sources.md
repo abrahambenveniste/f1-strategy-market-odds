@@ -1,6 +1,6 @@
 # Data-source register
 
-**Status:** Availability check recorded 20 October 2026. OpenF1, Jolpica-F1, and Open-Meteo returned usable sample data in this environment. Polymarket APIs could not be reached because TLS certificate validation failed. No source datasets have been retained in the repository, and no historical market coverage is confirmed.
+**Status:** Availability check recorded 20 October 2026. OpenF1, Jolpica-F1, and Open-Meteo returned usable sample data in this environment. The user also confirmed that the official Gamma host fails in their in-app browser with `ERR_CERT_COMMON_NAME_INVALID`. Polymarket APIs could not be reached because TLS certificate validation failed. No source datasets have been retained in the repository, and no historical market coverage is confirmed.
 
 ## Source-to-field plan and current access
 
@@ -13,6 +13,10 @@
 | [Polymarket CLOB market data](https://docs.polymarket.com/) and [Data API v2](https://data-api.polymarket.com/v2/docs) | Per-token historical price points where available; prospective public order-book snapshots with best bid/ask and available depth; trade/market metadata if needed; retrieval time and token ID. | **Blocked in this environment** by SSL connection failures on 20 Oct 2026. Historical prices and executable quote/depth coverage therefore remain unknown. A successful market-discovery audit is a prerequisite to modeling and any paper-trading analysis. Read-only only; no order placement. |
 | [Open-Meteo Single Runs API](https://open-meteo.com/en/docs/single-runs-api) and [Historical Forecast API](https://open-meteo.com/en/docs/historical-forecast-api) | Circuit latitude/longitude; model; run initialization; hourly forecast valid time/lead; temperature, humidity, precipitation probability/amount, cloud cover, wind speed/direction/gusts; units and retrieval time. | **Reachable.** Live forecast and historical-forecast requests returned HTTP 200. A historical-forecast query at Circuit of The Americas coordinates for 17–19 Oct 2025 returned 72 hourly observations for temperature, precipitation probability/amount, and wind speed. The Single Runs archive indicates ECMWF IFS HRES from March 2024 and other models from April 2026, so historical archived-run coverage may limit older events. Keep forecasts separate from realized weather and use only runs available by each cutoff. |
 | [Formula 1 official results](https://www.formula1.com/en/results.html) | Final race classification, winner, driver/team names, race date, and later classification amendments. | Manual reference for result and resolution cross-checks. No structured endpoint connection was established in this check. |
+
+## Independent data-provider fallback under review
+
+[PolymarketData](https://docs.polymarketdata.co/) is an independent provider, not affiliated with Polymarket. Its documentation claims minute-level prices, liquidity metrics, and historical Level 2 book snapshots, with standard history starting in August 2025; older history is offered on enterprise plans. Its API host passed TLS from this environment, but `GET /v1/markets?limit=1` returned HTTP 401 without an API key, as the docs require. No account, key, or purchase has been made. Whether its archive contains the specific historical F1 markets and whether the price/depth sample is sufficient remain unverified. Verify those points and current cost before choosing this route.
 
 ### Forecast horizons
 
