@@ -1,22 +1,23 @@
 # Technical stack
 
-**Status:** Selected implementation plan, 20 October 2026. The first collector is already implemented with Python's standard library; the analysis dependencies below are planned and will be pinned after the market-coverage audit establishes the smallest useful stack.
+**Status:** Updated 20 October 2026 after checking API access. Python is the analysis language; SQL through DuckDB supports local queries. The first Polymarket collector uses Python's standard library, but it could not reach Gamma due to TLS validation. The environment currently runs Python 3.13.15 and does not have FastF1 installed. Planned dependencies will be locked only after data access and coverage are confirmed.
 
 ## Language and environment
 
-- **Python 3.11+** for ingestion, cleaning, feature construction, probabilistic models, simulation, and reporting.
+- **Python 3.11+** for ingestion, cleaning, feature construction, probabilistic models, simulation, and reporting. Python 3.13.15 is available in the current runtime.
 - **SQL** through DuckDB for transparent joins, event-level dataset checks, and compact analytical queries.
 - **uv** for virtual environments, dependency management, and a committed lockfile once dependencies are introduced.
 - **Git and GitHub** for version history, issue tracking, documentation, and public review.
 
-The initial read-only Polymarket Gamma collector, `scripts/audit_polymarket_f1_markets.py`, currently uses only the Python standard library (`urllib`, `json`, `csv`, `argparse`, and related modules). It runs without installing a third-party package.
+The initial read-only Polymarket Gamma collector, `scripts/audit_polymarket_f1_markets.py`, currently uses only Python's standard library (`urllib`, `json`, `csv`, `argparse`, and related modules). It does not require third-party packages.
 
-## Planned packages
+## Planned packages and APIs
 
-| Package | Planned role |
+| Tool/package | Planned role |
 |---|---|
-| [FastF1](https://docs.fastf1.dev/) | Read F1 session timing, laps, telemetry, tire/stint information, weather observations, race-control messages, and results where available. |
-| [httpx](https://www.python-httpx.org/) | Make REST requests with explicit timeouts, headers, and retry handling for sources that do not need a specialized client. |
+| [OpenF1 API](https://openf1.org/docs/) | Primary candidate for historical F1 sessions from 2023 onward, including lap timing, grid/results, stints, pit stops, race-control messages, weather observations, and selected telemetry. Historical access is documented as free and unauthenticated; sample session, lap, and stint queries returned data in the 20 Oct 2026 connectivity check. |
+| [FastF1](https://docs.fastf1.dev/) | Optional alternative for F1 timing and telemetry if authenticated F1 TV access is available. The archive now returns 401 to unauthenticated requests; the current project environment does not have FastF1 installed. |
+| [httpx](https://www.python-httpx.org/) | REST requests with explicit timeouts, headers, and retry handling for APIs without a specialized client. The current starter collector uses `urllib`; this may remain sufficient if it meets our logging/retry needs. |
 | [pandas](https://pandas.pydata.org/docs/) and [NumPy](https://numpy.org/doc/) | Normalize tabular source data, build features, and perform numerical analysis. |
 | [DuckDB](https://duckdb.org/docs/) and [PyArrow](https://arrow.apache.org/docs/python/) | Query local analytical tables and store columnar Parquet data efficiently. |
 | [SciPy](https://docs.scipy.org/doc/scipy/) and [scikit-learn](https://scikit-learn.org/stable/user_guide.html) | Statistical baselines, probability calibration, evaluation metrics, and established machine-learning methods. Start with interpretable baselines; add model complexity only when walk-forward results justify it. |
@@ -24,7 +25,7 @@ The initial read-only Polymarket Gamma collector, `scripts/audit_polymarket_f1_m
 | [JupyterLab](https://jupyterlab.readthedocs.io/) | Optional exploratory workspace. Final results should be reproducible from versioned scripts/configuration rather than depending on notebook state. |
 | [Ruff](https://docs.astral.sh/ruff/) | Python formatting and linting. |
 
-No package versions are asserted here. The dependency file and lockfile will record exact versions at the point the analysis environment is created.
+No package versions are asserted here. The dependency file and lockfile will record exact versions when the analysis environment is created. No third-party packages have been installed as part of the connectivity check.
 
 ## Project workflow
 
