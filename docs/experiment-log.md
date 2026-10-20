@@ -22,7 +22,7 @@ This is the project diary. Add an entry whenever a decision, data audit, experim
 
 **Decision:** Do not disable TLS checks or scrape through an unverified certificate. Keep the official Polymarket APIs as the preferred source if a valid network route can be restored. Treat the third-party API as a possible paid fallback only after verifying F1 market coverage, suitable historic timestamps, and cost.
 
-**Next step:** Choose whether to try the official API from a different trusted network or evaluate a time-limited sample/trial from the independent provider. Public F1/results/weather work can continue while this is decided, but market modelling cannot.
+**Next step:** Choose whether to try the official API from a different trusted network or evaluate a time-limited sample/trial from the independent provider. Public F1/results/weather work can continue while market modelling cannot.
 
 ## 2026-10-20 — Read-only API and dataset availability check
 
@@ -66,13 +66,13 @@ This is the project diary. Add an entry whenever a decision, data audit, experim
 
 **Execution status:** The collector has not run and no market dataset has been retrieved. A direct API request from the current shell failed TLS certificate validation; opening the API endpoint in the browser also returned a certificate-name error. Certificate verification was not disabled. No coverage count, market inclusion decision, model result, or profitability claim is available yet.
 
-**Next step:** Run the documented collector in an environment with a valid connection to the public Gamma API, inspect event/market payload schemas, and record coverage, market rules, candidate inclusion/exclusion reasons, and historical quote granularity. Then revise the protocol's numerical coverage thresholds before fitting any model.
+**Next step:** Run the documented collector in an environment with a valid connection to the public Gamma API, inspect event/market payload schemas, record coverage, contract rules, candidate inclusion/exclusion reasons, and historical quote granularity. Then revise the protocol's numerical coverage thresholds before fitting any model.
 
 ## 2026-10-20 — Project bootstrap
 
 **Action:** Created the public repository and added the README, protocol draft, and source register.
 
-**Initial scope:** Test whether pre-event F1 information adds race-winner forecast value beyond contemporaneous Polymarket market prices, then separately test whether any edge survives hypothetical execution costs.
+**Initial scope:** Test whether pre-event F1 information adds race-winner forecast value beyond contemporaneous Polymarket prices, then separately test whether any edge survives hypothetical execution costs.
 
 **Decisions recorded:**
 
@@ -100,3 +100,15 @@ This is the project diary. Add an entry whenever a decision, data audit, experim
 **Decision:** Do not add an MCP dependency. Keep the research pipeline as direct Python ingestion for transparent, reproducible requests. Continue historical work with the attributed Polymarket-v1 archive; it contains trades/resolutions but no order-book snapshots. Restore valid TLS access to an official API or verify specific F1 coverage and cost from a provider before prospective quote/depth collection. No credentials or wallet were used, and no trading actions were taken.
 
 **Sources:** [Fernandez server](https://github.com/fernandezpablo85/polymarket-mcp), [Caiovicentino server](https://github.com/caiovicentino/polymarket-mcp-server), [its historical-price handler](https://github.com/caiovicentino/polymarket-mcp-server/blob/main/src/polymarket_mcp/tools/market_analysis.py#L390-L434), [its security audit](https://github.com/caiovicentino/polymarket-mcp-server/blob/main/docs/security-audit-T-0045.md). Full comparison and scope decision: [docs/mcp-evaluation.md](mcp-evaluation.md).
+
+## 2026-10-21 — Archive coverage audit prototype paused
+
+**Purpose:** Begin the next milestone: estimate how consistently the public Polymarket-v1 archive contains F1 Grand Prix winner-market trade prints near qualifying and race cutoffs. This archive audit is independent of the official Gamma/CLOB API connection, which still fails TLS validation here.
+
+**Method drafted:** Added `scripts/audit_archive_f1_coverage.py`, a Python read-only prototype that pins the Hugging Face dataset revision, obtains F1 schedules from Jolpica-F1 and qualifying session times from OpenF1, then queries dated `daily_aligned_multi` Parquet partitions over verified HTTPS using DuckDB. The initial scope was seasons 2024–2026, with a seven-calendar-day lookback before the earlier qualifying or race cutoff through race day. Candidate market slugs are found heuristically and require manual review. The script is intended to report trade-print freshness at five minutes before qualifying and the race; it does not claim executable prices or simulate fills. Added `requirements.txt` with DuckDB 1.5.6 as the minimal runtime.
+
+**Run attempted:** Dataset revision `5aa1b9d52316a8b2e789e81c8ae42c7ed532e8aa`; 857 dated partitions were indexed across 22 Dec 2023–28 Apr 2026. The selected race windows covered 413 partitions (1,227,532,378 compressed bytes), processed in 17 batches of 25. The scan was stopped by the user during batch 13 after progress reported 240,141 candidate trade rows accumulated in memory.
+
+**Status and interpretation:** This was a partial query run, not a coverage result. Batches 14–17 were not scanned, candidate slugs were not manually reviewed, and the aggregate JSON report was not written. The intermediate row count must not be interpreted as a number of contracts, races, valid markets, or evidence of predictive/trading value. The script and dependency file are now in the repository so the method can be inspected and resumed; they remain a prototype pending a smaller, reviewed run.
+
+**Decision for resumption:** Reassess scope before running the full scan again. A smaller season or one-race slice can validate runtime, matching rules, cutoff calculations, and output quality first. Keep the archive's trade prints separate from executable order-book evidence; do not disable TLS verification or make profitability claims from this dataset alone. No trades, credentials, or wallet actions were involved.
