@@ -2,6 +2,20 @@
 
 This is the project diary. Add an entry whenever a decision, data audit, experiment, or result changes the research direction. Keep failed attempts and negative findings.
 
+## 2026-10-20 — Source-to-field map and technical stack
+
+**Action:** Expanded `docs/data-sources.md` into a source-to-field plan, created `docs/technical-stack.md`, and linked both from the README. Recorded which fields are candidates, how they will be used, what availability constraints matter, and which package/tool will support each step.
+
+**Data plan:** FastF1 for session timing, laps, tires/stints, telemetry where available, weather observations, and race-control context; Jolpica-F1 for event/session identifiers, schedule, qualifying/grid/results, laps, pit stops, and historical context; Polymarket Gamma for event and contract discovery, rules, outcomes, token IDs, and available market metadata; Polymarket CLOB data for historical token-price points and prospective public bid/ask/depth snapshots; Open-Meteo single model runs for archived pre-cutoff forecasts; Formula 1's official results for classification and label cross-checks. The docs distinguish candidate semantic fields from confirmed endpoint schemas: actual coverage and field mappings await a successful audit.
+
+**Language and tools:** Python 3.11+ for the analysis workflow and SQL through DuckDB for local analytical queries. The current collector remains dependency-free on Python's standard library. Planned packages are FastF1, httpx, pandas, NumPy, DuckDB, PyArrow, SciPy, scikit-learn, Matplotlib, Seaborn, optional JupyterLab, and Ruff; exact versions and a uv lockfile will be set when the analysis environment is created.
+
+**Source checks:** Jolpica documentation lists calendar, qualifying, results, laps, and pit-stop endpoints, supports pagination, and requires a descriptive User-Agent. Open-Meteo's Single Runs documentation provides model-run initialization and hourly forecast variables; its current archive notes ECMWF IFS HRES from March 2024 and other models from April 2026, so older weather forecast coverage may be limited. This limitation is now explicit in the source plan.
+
+**Execution status:** Documentation and source planning only. No market data have been collected, no packages have been installed, and no model or trading simulation has run. The earlier API failure remains unresolved: local direct requests failed TLS certificate validation, including a Node diagnostic reporting an expired certificate. Certificate validation has not been bypassed.
+
+**Next step:** Establish a valid TLS path to the public Gamma API, run the read-only collector, inspect real payload schemas and coverage, and then lock the inclusion criteria and minimal dependency versions before building the joined dataset.
+
 ## 2026-10-20 — First market-audit collector
 
 **Action:** Added a read-only Python collector for public Polymarket Gamma tags and F1 event/market metadata at `scripts/audit_polymarket_f1_markets.py`. Added local-data/cache exclusions to `.gitignore` and documented the run command in the README.
