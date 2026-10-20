@@ -2,6 +2,24 @@
 
 This is the project diary. Add an entry whenever a decision, data audit, experiment, or result changes the research direction. Keep failed attempts and negative findings.
 
+## 2026-10-20 — Read-only API and dataset availability check
+
+**Action:** Checked public source connectivity using standard certificate validation, then queried small sample records. No certificates were ignored, packages were not installed, and no source files or API credentials were saved. Updated the source plan and README with the findings.
+
+**Results by source:**
+
+- **Jolpica-F1 — reachable.** `/ergast/f1/current.json?limit=1` returned HTTP 200 and reported 23 scheduled records for the 2026 season. `/ergast/f1/2024/1/results.json?limit=1` returned HTTP 200; the response reported 20 race classifications and listed Max Verstappen first.
+- **OpenF1 — usable historical sample confirmed.** Its API documentation says historical sessions from 2023 onward are free and require no authentication. `/v1/sessions?year=2024&session_name=Race` returned 24 sessions. The 2024 Bahrain race session key 9472 returned a lap record for driver 1 / lap 8 and three stint records for that driver. The first sample attempt included an unsupported `limit` query and produced errors; the follow-up used documented field filters and succeeded. A full coverage/missingness audit remains necessary.
+- **Open-Meteo — reachable.** Live forecast and historical-forecast endpoints returned HTTP 200. A historical-forecast request at Circuit of The Americas coordinates for 17–19 Oct 2025 returned 72 hourly observations for temperature, precipitation probability/amount, and wind speed. This proves a usable example, not full archived-run coverage.
+- **FastF1 / F1 Live Timing archive — unauthenticated access currently unavailable.** A direct 2024 session-data request returned HTTP 401; the timing host root returned HTTP 403. The FastF1 maintainer's open issue reports that the archive began requiring authentication around 15 Oct 2026 and that F1 TV Access (or higher) is now needed; the maintainer released a 3.9.0 alpha with authentication support. The local runtime has Python 3.13.15 and FastF1 is not installed. Use OpenF1 as the default historical source unless authenticated FastF1 access is specifically available and verified.
+- **Polymarket Gamma, CLOB, and Data APIs — blocked by TLS in this environment.** Small public read requests to Gamma event discovery, CLOB time, and Data API markets did not complete. Gamma's TLS error identified a certificate name mismatch and certificate-chain errors; CLOB/Data API requests also failed the SSL handshake. The API docs and browser retrieval did not provide an alternate route. Certificate verification was not disabled. No API market inventory or Polymarket price data have been collected.
+
+**Dataset status:** No raw or processed dataset has been retained in Git or locally by this check. F1 results/session samples and weather data can be queried; however, the central Polymarket market/price-history dataset is unavailable until API access works. The project is not ready for market-versus-model fitting or paper-return analysis.
+
+**Decision:** Use OpenF1 historical data from 2023 onward as the primary F1 timing candidate; keep FastF1 optional if authenticated access is available. Continue with feature/data-quality planning, but do not model or claim trading edge until Polymarket market coverage, resolution rules, and historical prices are audited.
+
+**Next step:** Ask whether the Gamma API endpoint opens from the user's normal browser/network. If so, isolate the failure to this execution environment and establish a valid read-only route; if not, resolve the network/certificate issue. No Polymarket credentials are needed for public read-only endpoints.
+
 ## 2026-10-20 — Source-to-field map and technical stack
 
 **Action:** Expanded `docs/data-sources.md` into a source-to-field plan, created `docs/technical-stack.md`, and linked both from the README. Recorded which fields are candidates, how they will be used, what availability constraints matter, and which package/tool will support each step.
