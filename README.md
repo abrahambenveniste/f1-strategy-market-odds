@@ -2,7 +2,7 @@
 
 A reproducible research project asking whether public F1 performance and race-context data can improve race-winner probabilities beyond Polymarket prices—and whether any measured difference survives executable prices and trading frictions.
 
-> **Status:** Research design and first read-only market-audit collector are in place. The collector has not yet produced an audited dataset; no model results, paper-trading results, or evidence of profitability have been produced.
+> **Status:** Research design, source/stack documentation, and a read-only market-audit collector are in place. Connectivity checks found usable public F1, results, and weather samples, but Polymarket API access is blocked in the current environment. No market dataset, model results, paper-trading results, or evidence of profitability have been produced.
 
 ## Research question
 
@@ -30,14 +30,19 @@ Feature availability will be audited carefully to prevent look-ahead leakage. Co
 
 ## Data sources
 
-- [FastF1](https://docs.fastf1.dev/): F1 timing, laps, telemetry, tires, weather, race-control messages, and session results.
+- [OpenF1](https://openf1.org/docs/): primary candidate for historical F1 session, lap, grid/results, stint, pit-stop, race-control, weather, and telemetry data from 2023 onward.
 - [Jolpica-F1](https://github.com/jolpica/jolpica-f1/blob/main/docs/README.md): historical schedules and results through an Ergast-compatible API.
-- [Open-Meteo Single Runs API](https://open-meteo.com/en/docs/single-runs-api): archived forecast runs for point-in-time weather features. The [Historical Weather API](https://open-meteo.com/en/docs/historical-weather-api) provides reanalysis and is not a substitute for a forecast that was actually available at the time.
+- [Open-Meteo Single Runs API](https://open-meteo.com/en/docs/single-runs-api) and [Historical Forecast API](https://open-meteo.com/en/docs/historical-forecast-api): archived forecast runs for point-in-time weather features. The [Historical Weather API](https://open-meteo.com/en/docs/historical-weather-api) provides reanalysis and is not a substitute for a forecast that was actually available at the time.
 - [Polymarket Gamma API](https://gamma-api.polymarket.com/docs), [CLOB and Data APIs](https://data-api.polymarket.com/v2/docs): market discovery, metadata, historical prices, and public market data.
+- [FastF1](https://docs.fastf1.dev/) remains an optional alternative. Its live timing archive currently returns HTTP 401 without authentication; see the [availability log](docs/experiment-log.md).
 
-See [docs/data-sources.md](docs/data-sources.md) for the source-to-field plan, [docs/technical-stack.md](docs/technical-stack.md) for language, packages, and tools, and [docs/research-plan.md](docs/research-plan.md) for the detailed protocol.
+See [docs/data-sources.md](docs/data-sources.md) for the source-to-field plan and availability checks, [docs/technical-stack.md](docs/technical-stack.md) for language, packages, and tools, and [docs/research-plan.md](docs/research-plan.md) for the detailed protocol.
 
-## First audit
+## Current access check
+
+On 20 October 2026, read-only sample requests to OpenF1, Jolpica-F1, and Open-Meteo returned data. Polymarket Gamma, CLOB, and Data API requests failed TLS certificate validation from this environment. Until that is resolved, the project cannot verify F1 market coverage or build the market-vs-model dataset. No certificate checks were disabled.
+
+## First market audit
 
 The read-only collector uses Python 3.10+ and only the standard library:
 
@@ -45,7 +50,7 @@ The read-only collector uses Python 3.10+ and only the standard library:
 python scripts/audit_polymarket_f1_markets.py
 ```
 
-It writes a local JSON inventory under `data/metadata/` with event/market metadata, outcome and token IDs, and heuristic classification hints for manual review. Generated data are git-ignored by default. This metadata inventory is not a quote history, executable price, or backtest.
+It writes a local JSON inventory under `data/metadata/` with event/market metadata, outcome and token IDs, and heuristic classification hints for manual review. Generated data are git-ignored by default. This metadata inventory is not a quote history, executable price, or backtest. Its API request currently fails in this environment because of the TLS issue above.
 
 ## Reproducibility and data policy
 
@@ -59,11 +64,12 @@ It writes a local JSON inventory under `data/metadata/` with event/market metada
 - [x] Create public repository and record the initial research design.
 - [x] Add the first read-only market-universe audit collector.
 - [x] Document the source-to-field map and planned Python analysis stack.
-- [ ] Execute the audit and document actual event/market coverage, contract rules, and historical quote coverage.
+- [x] Check sample availability for F1 historical data, results, and archived weather.
+- [ ] Restore valid TLS access to Polymarket's public APIs and audit actual market/price-history coverage.
 - [ ] Build a source inventory and point-in-time data model.
 - [ ] Implement transparent market and F1 baselines.
 - [ ] Add calibrated race simulation and walk-forward evaluation.
-- [ ] Capture live public quotes prospectively for paper-trading analysis.
+- [ ] Capture public quotes prospectively for paper-trading analysis.
 - [ ] Publish a results report, including negative or inconclusive findings.
 
 Research decisions and milestones are tracked in [docs/experiment-log.md](docs/experiment-log.md).
