@@ -89,3 +89,14 @@ This is the project diary. Add an entry whenever a decision, data audit, experim
 **Results:** None yet. No dataset has been collected, no model has been fitted, and no profitability claim is made.
 
 **Next step:** Implement a market-universe and coverage audit that produces a versioned, privacy-safe inventory of F1 events, race-winner contracts, outcomes, tokens, rules, price timestamps, and inclusion/exclusion reasons.
+
+
+## 2026-10-21 — Polymarket MCP assessment
+
+**Action:** Reviewed the source and setup documentation for `fernandezpablo85/polymarket-mcp` and `caiovicentino/polymarket-mcp-server`. No MCP server was installed or run.
+
+**Findings:** The Fernandez server exposes current topic/market lookup and search, not historical prices, fills, or book snapshots. The Caiovicentino server advertises a broad 45-tool suite, including trading and portfolio management, but its historical-price handler currently returns an unavailable-data placeholder. Its code calls the same official Polymarket APIs whose TLS validation is failing in this environment. Neither repository disables certificate checks, so neither resolves the certificate-name problem. The second repository also contains a security audit documenting read-only/demo-mode and order-limit enforcement concerns.
+
+**Decision:** Do not add an MCP dependency. Keep the research pipeline as direct Python ingestion for transparent, reproducible requests. Continue historical work with the attributed Polymarket-v1 archive; it contains trades/resolutions but no order-book snapshots. Restore valid TLS access to an official API or verify specific F1 coverage and cost from a provider before prospective quote/depth collection. No credentials or wallet were used, and no trading actions were taken.
+
+**Sources:** [Fernandez server](https://github.com/fernandezpablo85/polymarket-mcp), [Caiovicentino server](https://github.com/caiovicentino/polymarket-mcp-server), [its historical-price handler](https://github.com/caiovicentino/polymarket-mcp-server/blob/main/src/polymarket_mcp/tools/market_analysis.py#L390-L434), [its security audit](https://github.com/caiovicentino/polymarket-mcp-server/blob/main/docs/security-audit-T-0045.md). Full comparison and scope decision: [docs/mcp-evaluation.md](mcp-evaluation.md).
